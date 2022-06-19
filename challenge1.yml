@@ -1,0 +1,30 @@
+Resources:
+  leonswebAccessSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow http to our test host
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      VpcId: vpc-0052f185d869375e9
+  leonswebServerInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0022f774911c1d690
+      InstanceType: t2.micro
+      SubnetId: subnet-003a3f5160ac38179
+      UserData:
+       Fn::Base64: !Sub |
+         #!/bin/bash
+         sudo yum update -y
+         sudo yum install -y httpd
+         sudo systemctl start httpd
+         sudo systemctl enable httpd
+
